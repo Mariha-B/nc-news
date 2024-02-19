@@ -11,7 +11,7 @@ afterAll(() => {
   return db.end();
 });
 
-describe("/api/topics", () => {
+describe("/api/:endpoint", () => {
   describe("GET", () => {
     test("STATUS 200 - Responds with an array of all the topics objects.", () => {
       return request(app)
@@ -23,6 +23,14 @@ describe("/api/topics", () => {
             expect(typeof slug).toBe("string");
             expect(typeof description).toBe("string");
           });
+        });
+    });
+    test("STATUS 404 - Responds with 'Bad Request'", () => {
+      return request(app)
+        .get("/api/not-an-endpoint")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Not Found");
         });
     });
   });
