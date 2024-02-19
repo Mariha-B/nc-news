@@ -3,7 +3,7 @@ const { getTopics } = require("./controllers/topics.controller");
 const app = express();
 
 //GET
-app.get("/api/:endpoint", getTopics);
+app.get("/api/topics", getTopics);
 
 //Error Handling 
 app.use((err, req, res, next) => {

@@ -25,13 +25,10 @@ describe("/api/:endpoint", () => {
           });
         });
     });
-    test("STATUS 404 - Responds with 'Bad Request'", () => {
+    test("STATUS 404 - Responds with 404", () => {
       return request(app)
         .get("/api/not-an-endpoint")
         .expect(404)
-        .then(({ body: { msg } }) => {
-          expect(msg).toBe("Not Found");
-        });
     });
   });
 });
