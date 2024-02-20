@@ -13,8 +13,8 @@ exports.getArticle = (req, res, next) => {
 exports.getArticles = (req, res, next) => {
   const { sort_by, order } = req.query;
   selectArticles(sort_by, order)
-    .then((article) => {
-      res.status(200).send({ article });
+    .then((articles) => {
+      res.status(200).send({ articles });
     })
     .catch(next);
 };

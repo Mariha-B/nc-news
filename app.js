@@ -14,6 +14,8 @@ app.get("/api", getEndpoints);
 
 app.get("/api/articles/:article_id", getArticle);
 
+//app.get("/api/articles/:article_id/comments", getComments);
+
 app.get("/api/articles", getArticles);
 
 //Error Handling
