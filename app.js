@@ -1,7 +1,10 @@
 const express = require("express");
 const { getTopics } = require("./controllers/topics.controller");
 const { getEndpoints } = require("./controllers/endpoints.controller");
-const { getArticle } = require("./controllers/articles.controller");
+const {
+  getArticle,
+  getArticles,
+} = require("./controllers/articles.controller");
 const app = express();
 
 //GET
@@ -11,9 +14,9 @@ app.get("/api", getEndpoints);
 
 app.get("/api/articles/:article_id", getArticle);
 
+app.get("/api/articles", getArticles);
 
-
-//Error Handling 
+//Error Handling
 //Custom Error(s)
 app.use((err, req, res, next) => {
   if (err.status && err.msg) {
@@ -25,11 +28,10 @@ app.use((err, req, res, next) => {
 
 //PSQL Errors
 app.use((err, req, res, next) => {
-  console.log(err);
-  if (err.code === "22P02") {
-    res.status(400).send({msg: "Bad request"});
-  }else{
-    next(err)
+  if (err.code === "22P02" || err.code === "42703") {
+    res.status(400).send({ msg: "Bad request" });
+  } else {
+    next(err);
   }
 });
 
