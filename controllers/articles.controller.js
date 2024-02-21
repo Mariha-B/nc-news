@@ -1,4 +1,4 @@
-const { selectArticles } = require("../models/articles.model");
+const { selectArticles, selectComments } = require("../models/articles.model");
 const { fetchArticle } = require("../models/articles.model");
 
 exports.getArticle = (req, res, next) => {
@@ -15,6 +15,17 @@ exports.getArticles = (req, res, next) => {
   selectArticles(sort_by, order)
     .then((articles) => {
       res.status(200).send({ articles });
+    })
+    .catch(next);
+};
+
+exports.getComments = (req, res, next) => {
+  const { article_id } = req.params;
+  const { sort_by, order } = req.query;
+  selectComments(sort_by, order, article_id)
+    .then((comments) => {
+
+      res.status(200).send({ comments });
     })
     .catch(next);
 };

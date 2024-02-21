@@ -157,6 +157,45 @@ describe("/api/articles", () => {
 
 describe("/api/articles/:articles_id/comments", () => {
   describe("GET", () => {
-    
+    test("STATUS 200 - Responds with an array of all the comments on the given article_id", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          expect(comments).toHaveLength(11);
+          comments.forEach(
+            ({ comment_id, body, article_id, created_at, votes, author }) => {
+              expect(typeof comment_id).toBe("number");
+              expect(typeof body).toBe("string");
+              expect(typeof article_id).toBe("number");
+              expect(typeof created_at).toBe("string");
+              expect(typeof votes).toBe("number");
+              expect(typeof author).toBe("string");
+            }
+          );
+          expect(comments).toBeSortedBy("created_at", { descending: true });
+        });
+    });
+    test("STATUS 400 - Responds with bad request with invalid id", () => {
+      return request(app)
+        .get("/api/articles/not-an-id/comments")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad request");
+        });
+      ``;
+    });
+    test("STATUS 404 - Responds with not found with valid article_id with no comments OR article doesn't exist", () => {
+      return request(app)
+        .get("/api/articles/11/comments")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Not found");
+        });
+      ``;
+    });
+    test("STATUS 400 - Responds with bad request with invalid endpoint", () => {
+      return request(app).get("/api/articles/11/not-comments").expect(404);
+    });
   });
 });
