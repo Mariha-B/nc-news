@@ -167,7 +167,7 @@ describe("/api/articles/:articles_id/comments", () => {
             ({ comment_id, body, article_id, created_at, votes, author }) => {
               expect(typeof comment_id).toBe("number");
               expect(typeof body).toBe("string");
-              expect(typeof article_id).toBe("number");
+              expect(article_id).toBe(1);
               expect(typeof created_at).toBe("string");
               expect(typeof votes).toBe("number");
               expect(typeof author).toBe("string");
@@ -183,19 +183,31 @@ describe("/api/articles/:articles_id/comments", () => {
         .then(({ body: { msg } }) => {
           expect(msg).toBe("Bad request");
         });
-      ``;
+      
     });
-    test("STATUS 404 - Responds with not found with valid article_id with no comments OR article doesn't exist", () => {
+    test("STATUS 200 - Responds with empty array with valid article_id with no comments", () => {
       return request(app)
         .get("/api/articles/11/comments")
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          expect(comments).toHaveLength(0);
+        });
+    });
+    test("STATUS 404 - Responds with not found article doesn't exist", () => {
+      return request(app)
+        .get("/api/articles/999/comments")
         .expect(404)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe("Not found");
+          expect(msg).toBe("article does not exist");
         });
-      ``;
+      
     });
     test("STATUS 400 - Responds with bad request with invalid endpoint", () => {
       return request(app).get("/api/articles/11/not-comments").expect(404);
     });
+  });
+  describe("POST", () => {
+    
+    
   });
 });

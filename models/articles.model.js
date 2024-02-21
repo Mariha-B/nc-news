@@ -37,39 +37,41 @@ exports.selectArticles = (sort_by = "created_at", order = "DESC") => {
   );
 
   return db.query(queryString).then(({ rows }) => {
- 
     return rows;
   });
 };
 
-exports.selectComments = (sort_by = "created_at", order = "DESC", article_id) => {
+exports.selectComments = (
+  sort_by = "created_at",
+  order = "DESC",
+  article_id
+) => {
   // Greenlist
   const validOrders = ["ASC", "DESC"];
   if (!validOrders.includes(order.toUpperCase())) {
     return Promise.reject({ status: 400, msg: "Bad Request" });
   }
+  return this.fetchArticle(article_id)
+    .then(() => {
+      const queryString = format(
+        `SELECT 
+        comments.author,
+        comments.body,
+        comments.article_id,
+        comments.created_at,
+        comments.votes,
+        comments.comment_id
+      FROM comments LEFT JOIN articles ON comments.article_id = articles.article_id
+      WHERE articles.article_id = %L
+      ORDER BY comments.%I %s;`,
+        article_id,
+        sort_by,
+        order
+      );
 
-  const queryString = format(
-    `SELECT 
-      comments.author,
-      comments.body,
-      comments.article_id,
-      comments.created_at,
-      comments.votes,
-      comments.comment_id
-    FROM comments LEFT JOIN articles ON comments.article_id = articles.article_id
-    WHERE articles.article_id = %L
-    ORDER BY comments.%I %s;`,
-    article_id,
-    sort_by,
-    order
-   
-  );
-
-  return db.query(queryString).then(({ rows }) => {
-     if (rows.length === 0) {
-      return Promise.reject({ status: 404, msg: "Not found" });
-    }
-    return rows;
-  });
+      return db.query(queryString);
+    })
+    .then(({ rows }) => {
+      return rows;
+    });
 };
