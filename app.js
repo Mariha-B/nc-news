@@ -4,6 +4,7 @@ const { getEndpoints } = require("./controllers/endpoints.controller");
 const {
   getArticle,
   getArticles,
+  getComments,
 } = require("./controllers/articles.controller");
 const app = express();
 
@@ -14,7 +15,7 @@ app.get("/api", getEndpoints);
 
 app.get("/api/articles/:article_id", getArticle);
 
-//app.get("/api/articles/:article_id/comments", getComments);
+app.get("/api/articles/:article_id/comments", getComments);
 
 app.get("/api/articles", getArticles);
 
