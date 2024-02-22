@@ -214,5 +214,36 @@ describe("/api/articles/:articles_id/comments", () => {
         });
     });
   });
-  describe("POST", () => {});
+  describe("POST", () => {
+    test("STATUS 201 - Responds with the newly inserted comment object.", () => {
+      const newComment = {
+        author: "butter_bridge",
+        body: "What are you doing in MA swamp?",
+      };
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(newComment)
+        .expect(201)
+        .then(({ body: { comment } }) => {
+          expect(comment.comment_id).toEqual(19);
+          expect(comment.author).toEqual("butter_bridge");
+          expect(comment.body).toEqual("What are you doing in MA swamp?");
+          expect(comment.article_id).toEqual(1);
+          expect(typeof comment.created_at).toEqual("string");
+          expect(comment.votes).toEqual(0);
+        });
+    });
+    test("STATUS 400 - Responds with 'Bad Request' due to sent object missing properties.", () => {
+      const newComment = {
+        body: "What are you doing in MA swamp?",
+      };
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(newComment)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad request");
+        });
+    });
+  });
 });
