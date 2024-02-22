@@ -12,7 +12,11 @@ exports.fetchArticle = (article_id) => {
     });
 };
 
-exports.selectArticles = (sort_by = "created_at", order = "DESC") => {
+exports.selectArticles = (
+  topic = "%",
+  sort_by = "created_at",
+  order = "DESC"
+) => {
   // Greenlist
   const validOrders = ["ASC", "DESC"];
   if (!validOrders.includes(order.toUpperCase())) {
@@ -30,13 +34,18 @@ exports.selectArticles = (sort_by = "created_at", order = "DESC") => {
       articles.article_img_url,
     COUNT(comments.comment_id)::INT AS comment_count
     FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id
+    WHERE articles.topic LIKE %L
     GROUP BY articles.article_id
     ORDER BY articles.%I %s;`,
+    topic,
     sort_by,
     order
   );
 
   return db.query(queryString).then(({ rows }) => {
+    if (rows.length === 0) {
+      return Promise.reject({ status: 400, msg: "topic does not exist" });
+    }
     return rows;
   });
 };
@@ -93,7 +102,7 @@ exports.insertComment = (newComment) => {
 };
 
 exports.updateArticle = (article_id, inc_votes) => {
-  if(!inc_votes){
+  if (!inc_votes) {
     return this.fetchArticle(article_id);
   }
   return db
@@ -111,4 +120,3 @@ exports.updateArticle = (article_id, inc_votes) => {
       return rows[0];
     });
 };
-
