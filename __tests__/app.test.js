@@ -253,7 +253,7 @@ describe("PATCH /api/articles/:article_id", () => {
     return request(app)
       .patch("/api/articles/1")
       .send({ inc_votes: 1 })
-      .expect(201)
+      .expect(200)
       .then(({ body: { article } }) => {
         expect(article).toEqual({
           article_id: 1,
@@ -268,13 +268,50 @@ describe("PATCH /api/articles/:article_id", () => {
         });
       });
   });
-  test("STATUS 400 - Responds with 'Bad Request' due to sent object missing properties.", () => {
+  test("STATUS 200 - Responds with the article object with the updated vote.", () => {
     return request(app)
       .patch("/api/articles/1")
       .send({})
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article).toEqual({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 100,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        });
+      });
+  });
+  test("STATUS 400 - Responds with 'Bad Request' due to incorrect property type.", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: "not-a-number" })
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Bad request");
+      });
+  });
+  test("STATUS 400 - Responds with 'Bad Request' due to invalid id.", () => {
+    return request(app)
+      .patch("/api/articles/not-an-id")
+      .send({ inc_votes: 1 })
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
+  test("STATUS 404 - Responds with 'article does not exist' due to non-existing article.", () => {
+    return request(app)
+      .patch("/api/articles/10000")
+      .send({ inc_votes: 1 })
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("article does not exist");
       });
   });
 });
@@ -284,11 +321,12 @@ describe("DELETE /api/comments/:comment_id", () => {
     return request(app).delete("/api/comments/1").expect(204);
   });
   test("STATUS 404 - Responds with the status code 404 when comment not found.", () => {
-    return request(app).delete("/api/comments/10000")
-    .expect(404)
-    .then(({ body: { msg } }) => {
-      expect(msg).toBe("Not found");
-    });
+    return request(app)
+      .delete("/api/comments/10000")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Not found");
+      });
   });
   test("STATUS 400 - Responds with 'Bad Request' due to invalid ID.", () => {
     return request(app)
