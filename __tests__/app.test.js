@@ -157,6 +157,46 @@ describe("/api/articles", () => {
           expect(msg).toBe("Bad request");
         });
     });
+    describe("QUERY ?topic=:topic", () => {
+      test("STATUS 200 - Responds with an array of the article objects of the queried topic.", () => {
+        return request(app)
+          .get("/api/articles?topic=mitch")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toHaveLength(12);
+            articles.forEach(
+              ({
+                author,
+                title,
+                article_id,
+                topic,
+                created_at,
+                votes,
+                article_img_url,
+                comment_count,
+              }) => {
+                expect(typeof author).toBe("string");
+                expect(typeof title).toBe("string");
+                expect(typeof article_id).toBe("number");
+                expect(topic).toBe("mitch");
+                expect(typeof created_at).toBe("string");
+                expect(typeof votes).toBe("number");
+                expect(typeof article_img_url).toBe("string");
+                expect(typeof comment_count).toBe("number");
+              }
+            );
+            expect(articles).toBeSortedBy("created_at", { descending: true });
+          });
+      });
+      test("STATUS 400 - Responds with 'Bad Request' when requested with an invalid topic query.", () => {
+        return request(app)
+          .get("/api/articles?topic=invalid")
+          .expect(400)
+          .then(({ body: { msg } }) => {
+            expect(msg).toBe("topic does not exist");
+          });
+      });
+    });
   });
 });
 
