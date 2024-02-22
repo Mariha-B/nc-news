@@ -28,7 +28,12 @@ describe("/api/topics", () => {
         });
     });
     test("STATUS 404 - Responds with 404", () => {
-      return request(app).get("/api/not-an-endpoint").expect(404);
+      return request(app)
+        .get("/api/not-an-endpoint")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Not Found");
+        });
     });
   });
 });
@@ -183,7 +188,6 @@ describe("/api/articles/:articles_id/comments", () => {
         .then(({ body: { msg } }) => {
           expect(msg).toBe("Bad request");
         });
-      
     });
     test("STATUS 200 - Responds with empty array with valid article_id with no comments", () => {
       return request(app)
@@ -200,14 +204,15 @@ describe("/api/articles/:articles_id/comments", () => {
         .then(({ body: { msg } }) => {
           expect(msg).toBe("article does not exist");
         });
-      
     });
-    test("STATUS 400 - Responds with bad request with invalid endpoint", () => {
-      return request(app).get("/api/articles/11/not-comments").expect(404);
+    test("STATUS 404 - Responds with bad request with invalid endpoint", () => {
+      return request(app)
+        .get("/api/articles/11/not-comments")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Not Found");
+        });
     });
   });
-  describe("POST", () => {
-    
-    
-  });
+  describe("POST", () => {});
 });
