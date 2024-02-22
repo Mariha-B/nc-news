@@ -8,6 +8,7 @@ const {
   postComment,
   patchArticle,
 } = require("./controllers/articles.controller");
+const { deleteComment } = require("./controllers/comments.controller");
 const app = express();
 
 app.use(express.json());
@@ -29,6 +30,9 @@ app.post("/api/articles/:article_id/comments", postComment);
 //PATCH
 app.patch("/api/articles/:article_id", patchArticle);
 
+//DELETE
+app.delete("/api/comments/:comment_id", deleteComment);
+
 //Error Handling
 
 //PSQL Errors
@@ -40,13 +44,14 @@ app.use((err, req, res, next) => {
   }
 });
 
-app.use((req, res, next) => {
-  res.status(404).send({ msg: "Not Found" });
+app.use((err, req, res, next) => {
+  if (err.code === "23503") {
+    res.status(404).send({ msg: "Not Found" });
+  } else {
+    next(err);
+  }
 });
 
-app.use((req, res, next) => {
-  res.status(400).send({ msg: "Bad Request" });
-});
 
 //Custom Error(s)
 app.use((err, req, res, next) => {
@@ -55,6 +60,10 @@ app.use((err, req, res, next) => {
   } else {
     next(err);
   }
+});
+
+app.use((req, res, next) => {
+  res.status(404).send({ msg: "Not Found" });
 });
 
 //Default
