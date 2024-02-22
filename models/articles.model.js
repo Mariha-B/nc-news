@@ -93,6 +93,9 @@ exports.insertComment = (newComment) => {
 };
 
 exports.updateArticle = (article_id, inc_votes) => {
+  if(!inc_votes){
+    return this.fetchArticle(article_id);
+  }
   return db
     .query(
       `UPDATE articles
@@ -102,6 +105,9 @@ exports.updateArticle = (article_id, inc_votes) => {
       [inc_votes, article_id]
     )
     .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "article does not exist" });
+      }
       return rows[0];
     });
 };
