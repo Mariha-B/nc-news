@@ -9,6 +9,7 @@ const {
   patchArticle,
 } = require("./controllers/articles.controller");
 const { deleteComment } = require("./controllers/comments.controller");
+const { getUsers } = require("./controllers/users.controller");
 const app = express();
 
 app.use(express.json());
@@ -23,6 +24,8 @@ app.get("/api/articles/:article_id", getArticle);
 app.get("/api/articles/:article_id/comments", getComments);
 
 app.get("/api/articles", getArticles);
+
+app.get("/api/users", getUsers);
 
 //POST
 app.post("/api/articles/:article_id/comments", postComment);
@@ -51,7 +54,6 @@ app.use((err, req, res, next) => {
     next(err);
   }
 });
-
 
 //Custom Error(s)
 app.use((err, req, res, next) => {

@@ -337,3 +337,29 @@ describe("DELETE /api/comments/:comment_id", () => {
       });
   });
 });
+
+describe("/api/users", () => {
+  describe("GET", () => {
+    test("STATUS 200 - Responds with an array of all the user objects.", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body: { users } }) => {
+          expect(users).toHaveLength(4);
+          users.forEach(({ username, name, avatar_url }) => {
+            expect(typeof username).toBe("string");
+            expect(typeof name).toBe("string");
+            expect(typeof avatar_url).toBe("string");
+          });
+        });
+    });
+    test("STATUS 404 - Responds with 404", () => {
+      return request(app)
+        .get("/api/not-an-endpoint")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Not Found");
+        });
+    });
+  });
+});
