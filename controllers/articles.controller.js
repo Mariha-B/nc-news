@@ -3,6 +3,7 @@ const {
   selectComments,
   insertComment,
   updateArticle,
+  removeComment,
 } = require("../models/articles.model");
 const { fetchArticle } = require("../models/articles.model");
 
@@ -36,22 +37,21 @@ exports.getComments = (req, res, next) => {
 
 exports.postComment = (req, res, next) => {
   const { author, body } = req.body;
-  const {article_id} = req.params;
-  insertComment({body, author, article_id})
+  const { article_id } = req.params;
+  insertComment({ body, author, article_id })
     .then((comment) => {
       res.status(201).send({ comment });
     })
     .catch(next);
 };
 
-exports.patchArticle = (req, res, next) =>
-{
-    const { article_id } = req.params;
-    const { inc_votes } = req.body
-    updateArticle(article_id, inc_votes)
-        .then((article) =>
-        {
-            res.status(201).send({ article });
-        })
-        .catch(next);
-}
+exports.patchArticle = (req, res, next) => {
+  const { article_id } = req.params;
+  const { inc_votes } = req.body;
+  updateArticle(article_id, inc_votes)
+    .then((article) => {
+      res.status(201).send({ article });
+    })
+    .catch(next);
+};
+
