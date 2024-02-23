@@ -67,6 +67,24 @@ describe("/api/articles/:article_id", () => {
           );
         });
     });
+    test("STATUS 200 - Responds with an article object of article_id WITH comment_count", () => {
+      return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article.author).toBe("butter_bridge");
+          expect(article.title).toBe("Living in the shadow of a great man");
+          expect(article.article_id).toBe(1);
+          expect(article.body).toBe("I find this existence challenging");
+          expect(article.topic).toBe("mitch");
+          expect(article.created_at).toBe("2020-07-09T20:11:00.000Z");
+          expect(article.votes).toBe(100);
+          expect(article.article_img_url).toBe(
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+          );
+          expect(article.comment_count).toBe(11);
+        });
+    });
     test("STATUS 404 - Responds with not found when given a valid but non-existing id", () => {
       return request(app)
         .get("/api/articles/9999")
@@ -100,6 +118,7 @@ describe("/api/articles", () => {
               title,
               article_id,
               topic,
+              body,
               created_at,
               votes,
               article_img_url,
@@ -109,6 +128,7 @@ describe("/api/articles", () => {
               expect(typeof title).toBe("string");
               expect(typeof article_id).toBe("number");
               expect(typeof topic).toBe("string");
+              expect(typeof body).toBe("string");
               expect(typeof created_at).toBe("string");
               expect(typeof votes).toBe("number");
               expect(typeof article_img_url).toBe("string");
@@ -130,6 +150,7 @@ describe("/api/articles", () => {
               title,
               article_id,
               topic,
+              body,
               created_at,
               votes,
               article_img_url,
@@ -139,6 +160,7 @@ describe("/api/articles", () => {
               expect(typeof title).toBe("string");
               expect(typeof article_id).toBe("number");
               expect(typeof topic).toBe("string");
+              expect(typeof body).toBe("string");
               expect(typeof created_at).toBe("string");
               expect(typeof votes).toBe("number");
               expect(typeof article_img_url).toBe("string");
@@ -169,6 +191,7 @@ describe("/api/articles", () => {
                 title,
                 article_id,
                 topic,
+                body,
                 created_at,
                 votes,
                 article_img_url,
@@ -178,6 +201,7 @@ describe("/api/articles", () => {
                 expect(typeof title).toBe("string");
                 expect(typeof article_id).toBe("number");
                 expect(topic).toBe("mitch");
+                expect(typeof body).toBe("string");
                 expect(typeof created_at).toBe("string");
                 expect(typeof votes).toBe("number");
                 expect(typeof article_img_url).toBe("string");
@@ -303,36 +327,34 @@ describe("PATCH /api/articles/:article_id", () => {
       .send({ inc_votes: 1 })
       .expect(200)
       .then(({ body: { article } }) => {
-        expect(article).toEqual({
-          article_id: 1,
-          title: "Living in the shadow of a great man",
-          topic: "mitch",
-          author: "butter_bridge",
-          body: "I find this existence challenging",
-          created_at: "2020-07-09T20:11:00.000Z",
-          votes: 101,
-          article_img_url:
-            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-        });
+        expect(article.author).toBe("butter_bridge");
+          expect(article.title).toBe("Living in the shadow of a great man");
+          expect(article.article_id).toBe(1);
+          expect(article.body).toBe("I find this existence challenging");
+          expect(article.topic).toBe("mitch");
+          expect(article.created_at).toBe("2020-07-09T20:11:00.000Z");
+          expect(article.votes).toBe(101);
+          expect(article.article_img_url).toBe(
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+          );
       });
   });
-  test("STATUS 200 - Responds with the article object with the updated vote.", () => {
+  test("STATUS 200 - Responds with the original article object when sent an empty object.", () => {
     return request(app)
       .patch("/api/articles/1")
       .send({})
       .expect(200)
       .then(({ body: { article } }) => {
-        expect(article).toEqual({
-          article_id: 1,
-          title: "Living in the shadow of a great man",
-          topic: "mitch",
-          author: "butter_bridge",
-          body: "I find this existence challenging",
-          created_at: "2020-07-09T20:11:00.000Z",
-          votes: 100,
-          article_img_url:
-            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
-        });
+        expect(article.author).toBe("butter_bridge");
+          expect(article.title).toBe("Living in the shadow of a great man");
+          expect(article.article_id).toBe(1);
+          expect(article.body).toBe("I find this existence challenging");
+          expect(article.topic).toBe("mitch");
+          expect(article.created_at).toBe("2020-07-09T20:11:00.000Z");
+          expect(article.votes).toBe(100);
+          expect(article.article_img_url).toBe(
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+          );
       });
   });
   test("STATUS 400 - Responds with 'Bad Request' due to incorrect property type.", () => {
