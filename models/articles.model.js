@@ -19,8 +19,12 @@ exports.selectArticles = (
 ) => {
   // Greenlist
   const validOrders = ["ASC", "DESC"];
+  const validTopics = ["cat", "paper", "mitch", "%"];
   if (!validOrders.includes(order.toUpperCase())) {
     return Promise.reject({ status: 400, msg: "Bad Request" });
+  }
+  if (!validTopics.includes(topic)) {
+    return Promise.reject({ status: 404, msg: "topic does not exist" });
   }
 
   const queryString = format(
@@ -44,7 +48,7 @@ exports.selectArticles = (
 
   return db.query(queryString).then(({ rows }) => {
     if (rows.length === 0) {
-      return Promise.reject({ status: 400, msg: "topic does not exist" });
+      return [];
     }
     return rows;
   });

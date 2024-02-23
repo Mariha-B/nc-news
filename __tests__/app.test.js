@@ -13,6 +13,24 @@ afterAll(() => {
   return db.end();
 });
 
+describe("api/", () => {
+  test("STATUS 200 - Responds with an object describing available endpoints on api", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body).toEqual(endpoints);
+      });
+  });
+  test("STATUS 404 - Responds with 404", () => {
+    return request(app)
+      .get("/api/not-an-endpoint")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Not Found");
+      });
+  });
+});
 describe("/api/topics", () => {
   describe("GET", () => {
     test("STATUS 200 - Responds with an array of all the topics objects.", () => {
@@ -27,25 +45,6 @@ describe("/api/topics", () => {
           });
         });
     });
-    test("STATUS 404 - Responds with 404", () => {
-      return request(app)
-        .get("/api/not-an-endpoint")
-        .expect(404)
-        .then(({ body: { msg } }) => {
-          expect(msg).toBe("Not Found");
-        });
-    });
-  });
-});
-
-describe("/api", () => {
-  test("STATUS 200 - Responds with an object describing available endpoints on api", () => {
-    return request(app)
-      .get("/api")
-      .expect(200)
-      .then(({ body }) => {
-        expect(body).toEqual(endpoints);
-      });
   });
 });
 
@@ -188,10 +187,19 @@ describe("/api/articles", () => {
             expect(articles).toBeSortedBy("created_at", { descending: true });
           });
       });
-      test("STATUS 400 - Responds with 'Bad Request' when requested with an invalid topic query.", () => {
+      test("STATUS 200 - Responds with empty array when requested with a topic query with 0 articles.", () => {
+        return request(app)
+          .get("/api/articles?topic=paper")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).toHaveLength(0);
+            expect(Array.isArray(articles)).toBe(true);
+          });
+      });
+      test("STATUS 404 - Responds with 'not found' when requested with an invalid topic query.", () => {
         return request(app)
           .get("/api/articles?topic=invalid")
-          .expect(400)
+          .expect(404)
           .then(({ body: { msg } }) => {
             expect(msg).toBe("topic does not exist");
           });
@@ -391,14 +399,6 @@ describe("/api/users", () => {
             expect(typeof name).toBe("string");
             expect(typeof avatar_url).toBe("string");
           });
-        });
-    });
-    test("STATUS 404 - Responds with 404", () => {
-      return request(app)
-        .get("/api/not-an-endpoint")
-        .expect(404)
-        .then(({ body: { msg } }) => {
-          expect(msg).toBe("Not Found");
         });
     });
   });
