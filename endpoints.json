@@ -72,7 +72,7 @@
       ]
     }
   },
-  "GET /api/articles_id/comments": {
+  "GET /api/articles/:article_id/comments": {
     "description": "serves an array of comments sorted by date in descending order, for given article_id",
     "queries": [],
     "exampleResponse": {
@@ -97,7 +97,7 @@
       ]
     }
   },
-  "POST /api/articles_id/comments": {
+  "POST /api/articles/:article_id/comments": {
     "description": "posts a new comment, for given article_id",
     "queries": [],
     "exampleResponse": {
@@ -114,7 +114,7 @@
       ]
     }
   },
-  "PATCH /api/articles_id": {
+  "PATCH /api/articles/:article_id": {
     "description": "updates the votes on an existing article, for given article_id",
     "queries": [],
     "exampleResponse": {
@@ -133,7 +133,7 @@
       ]
     }
   },
-  "DELETE /api/comment/:comment_id": {
+  "DELETE /api/comments/:comment_id": {
     "description": "deletes the existing comment if it exists, for given comment_id",
     "queries": [],
     "exampleResponse": {   
