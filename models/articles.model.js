@@ -34,7 +34,7 @@ exports.selectArticles = (
 ) => {
   // Greenlist
   const validOrders = ["ASC", "DESC"];
-  const validTopics = ["cat", "paper", "mitch", "%"];
+  const validTopics = ["cat", "paper", "mitch", "coding", "football", "cooking", "%"];
   if (!validOrders.includes(order.toUpperCase())) {
     return Promise.reject({ status: 400, msg: "Bad Request" });
   }
