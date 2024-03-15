@@ -61,7 +61,7 @@ exports.selectArticles = (
       FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id
       WHERE articles.topic LIKE %L
       GROUP BY articles.article_id
-      ORDER BY articles.%I %s;`,
+      ORDER BY %I %s;`,
         topic,
         sort_by,
         order

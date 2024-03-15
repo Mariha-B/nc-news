@@ -166,6 +166,36 @@ describe("/api/articles", () => {
           expect(articles).toBeSortedBy("created_at", { descending: true });
         });
     });
+    test("STATUS 200 - Responds with an array of all the article objects sorted by the comments in descending order", () => {
+      return request(app)
+        .get("/api/articles?sort_by=comment_count")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(articles).toHaveLength(13);
+          articles.forEach(
+            ({
+              author,
+              title,
+              article_id,
+              topic,
+              created_at,
+              votes,
+              article_img_url,
+              comment_count,
+            }) => {
+              expect(typeof author).toBe("string");
+              expect(typeof title).toBe("string");
+              expect(typeof article_id).toBe("number");
+              expect(typeof topic).toBe("string");
+              expect(typeof created_at).toBe("string");
+              expect(typeof votes).toBe("number");
+              expect(typeof article_img_url).toBe("string");
+              expect(typeof comment_count).toBe("number");
+            }
+          );
+          expect(articles).toBeSortedBy("comment_count", { descending: true });
+        });
+    });
     test("STATUS 400 - Responds with 'Bad Request' when requested with an invalid sort_by query.", () => {
       return request(app)
         .get("/api/articles?sort_by=invalid")
