@@ -35,7 +35,11 @@ exports.selectArticles = (
 ) => {
   // Greenlist
   const validOrders = ["ASC", "DESC"];
+  const validSort = ["created_at", "votes", "comment_count"];
   if (!validOrders.includes(order.toUpperCase())) {
+    return Promise.reject({ status: 400, msg: "Bad Request" });
+  }
+  if (!validSort.includes(sort_by)) {
     return Promise.reject({ status: 400, msg: "Bad Request" });
   }
   return fetchTopics()

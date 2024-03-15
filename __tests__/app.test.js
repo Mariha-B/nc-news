@@ -171,7 +171,7 @@ describe("/api/articles", () => {
         .get("/api/articles?sort_by=invalid")
         .expect(400)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe("Bad request");
+          expect(msg).toBe("Bad Request");
         });
     });
     describe("QUERY ?topic=:topic", () => {
