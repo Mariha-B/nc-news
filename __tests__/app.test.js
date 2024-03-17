@@ -27,7 +27,7 @@ describe("api/", () => {
       .get("/api/not-an-endpoint")
       .expect(404)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("Not Found");
+        expect(msg).toBe("Invalid Endpoint");
       });
   });
 });
@@ -306,7 +306,7 @@ describe("/api/articles/:articles_id/comments", () => {
         .get("/api/articles/11/not-comments")
         .expect(404)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe("Not Found");
+          expect(msg).toBe("Invalid Endpoint");
         });
     });
   });
